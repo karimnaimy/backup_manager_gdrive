@@ -1,0 +1,48 @@
+{
+  "directories": [
+    {
+      "source": "/var/www",
+      "max": 2,
+      "name": "website_files",
+      "exclude": ["*.log", "cache/*", "tmp/*", "node_modules/*"]
+    },
+    {
+      "source": "/etc/nginx",
+      "max": 5,
+      "name": "nginx_config"
+    },
+    {
+      "source": "/etc/apache2/sites-available",
+      "max": 3,
+      "name": "apache_sites"
+    },
+    {
+      "source": "/home/user/projects",
+      "max": 2,
+      "name": "user_projects",
+      "exclude": ["*.git/*", "node_modules/*", "__pycache__/*", "*.pyc"]
+    }
+  ],
+  "files": [
+    {
+      "source": "/etc/hosts",
+      "name": "system_hosts",
+      "max": 10
+    },
+    {
+      "source": "/etc/fstab",
+      "name": "filesystem_table",
+      "max": 5
+    },
+    {
+      "source": "/home/user/.bashrc",
+      "name": "user_bashrc",
+      "max": 3
+    },
+    {
+      "source": "/etc/crontab",
+      "name": "system_cron",
+      "max": 5
+    }
+  ]
+}
