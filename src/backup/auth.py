@@ -45,7 +45,7 @@ class GoogleDriveAuth:
         return None
     
     def _get_new_credentials(self) -> Credentials:
-        """Get new credentials using manual authorization flow."""
+        """Get new credentials using local server flow."""
         if not self.config.credentials_file.exists():
             raise FileNotFoundError(
                 f"Credentials file not found: {self.config.credentials_file}\n"
@@ -56,18 +56,23 @@ class GoogleDriveAuth:
             str(self.config.credentials_file), 
             SCOPES
         )
-        flow.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
         
-        auth_url, _ = flow.authorization_url(prompt='consent')
-        print(f"\nPlease visit this URL to authorize the application:")
-        print(f"{auth_url}")
-        print(f"\nAfter authorization, you'll receive a code.")
-        print("Copy the authorization code and paste it below:")
-        
-        code = input("Authorization code: ").strip()
-        flow.fetch_token(code=code)
-        
-        return flow.credentials
+        # Try local server flow first
+        try:
+            print("Starting local server for authentication...")
+            creds = flow.run_local_server(port=0)
+            return creds
+        except Exception as e:
+            print(f"Local server authentication failed: {e}")
+            print("\n" + "="*60)
+            print("HEADLESS SERVER INSTRUCTIONS:")
+            print("="*60)
+            print("1. Run this tool on a machine with a browser first")
+            print("2. Complete the authentication there")
+            print("3. Copy the generated 'credentials/token.json' to this server")
+            print("4. Then run the backup tool on this server")
+            print("="*60)
+            raise RuntimeError("Authentication failed. See instructions above for headless servers.")
     
     def _save_credentials(self, creds: Credentials) -> None:
         """Save credentials to token file."""
